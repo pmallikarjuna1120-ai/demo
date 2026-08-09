@@ -7,13 +7,16 @@
     </parent>
   <groupId>com.example</groupId>
   <artifactId>spring-batch-future</artifactId>
-  <version>1.0.0</version>
   <properties>
     <java.version>21</java.version>
     <resilience4j.version>2.1.0</resilience4j.version>
   </properties>
   <dependencies>
     <!-- Spring Batch Core -->
+    <dependency>
+	    <groupId>org.springframework.boot</groupId>
+	    <artifactId>spring-boot-starter-aop</artifactId>
+	</dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-batch</artifactId>

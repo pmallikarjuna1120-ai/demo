@@ -37,7 +37,7 @@ public class AsyncProcessorConfig {
      * Graceful shutdown waits for in-flight work.
      */
     @Bean
-    public ThreadPoolTaskExecutor customerProcessorExecutor(BatchProperties properties) {
+    ThreadPoolTaskExecutor customerProcessorExecutor(BatchProperties properties) {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(properties.getWorkerThreads());
         executor.setMaxPoolSize(properties.getWorkerThreads());
@@ -53,7 +53,7 @@ public class AsyncProcessorConfig {
      * Extracts ExecutorService from ThreadPoolTaskExecutor for ParallelItemProcessor.
      */
     @Bean
-    public ExecutorService customerProcessorExecutorService(
+    ExecutorService customerProcessorExecutorService(
             ThreadPoolTaskExecutor customerProcessorExecutor) {
         return customerProcessorExecutor.getThreadPoolExecutor();
     }
@@ -62,7 +62,7 @@ public class AsyncProcessorConfig {
      * Wraps CustomerProcessor with Circuit Breaker for fault tolerance.
      */
     @Bean
-    public ItemProcessor<Customer, ProcessResult> circuitBreakerCustomerProcessor(
+    ItemProcessor<Customer, ProcessResult> circuitBreakerCustomerProcessor(
             CustomerProcessor delegate,
             CircuitBreaker customerProcessorCircuitBreaker) {
         return new CircuitBreakerProcessor(customerProcessorCircuitBreaker, delegate);
@@ -74,7 +74,7 @@ public class AsyncProcessorConfig {
      * Returns Future<ProcessResult> for async processing.
      */
     @Bean
-    public ParallelItemProcessor<Customer, ProcessResult> parallelCustomerProcessor(
+    ParallelItemProcessor<Customer, ProcessResult> parallelCustomerProcessor(
             ItemProcessor<Customer, ProcessResult> circuitBreakerCustomerProcessor,
             ExecutorService customerProcessorExecutorService) {
         return new ParallelItemProcessor<>(
@@ -88,7 +88,7 @@ public class AsyncProcessorConfig {
      * Delegates to BulkFilteringWriter for actual database writes.
      */
     @Bean
-    public ItemWriter<ProcessResult> metricsCollectingWriter(
+    ItemWriter<ProcessResult> metricsCollectingWriter(
             BulkFilteringWriter bulkFilteringWriter,
             io.micrometer.core.instrument.MeterRegistry meterRegistry) {
         return new MetricsCollectingWriter(meterRegistry, bulkFilteringWriter);
@@ -99,7 +99,7 @@ public class AsyncProcessorConfig {
      * Unwraps Futures and batches results for writing.
      */
     @Bean
-    public AsyncItemWriter<ProcessResult> customerWriter(
+    AsyncItemWriter<ProcessResult> customerWriter(
             ItemWriter<ProcessResult> metricsCollectingWriter) {
         AsyncItemWriter<ProcessResult> writer = new AsyncItemWriter<>();
         writer.setDelegate(metricsCollectingWriter);

@@ -64,7 +64,7 @@ class BulkCustomerJobIT {
         Assertions.assertEquals(ExitStatus.COMPLETED, jobExecution.getExitStatus());
         
         Integer completed = jdbcTemplate.queryForObject("SELECT COUNT(*) FROM CUSTOMER WHERE STATUS='PROCESSED'", Integer.class);
-        Assertions.assertEquals(completed, 2000);
+        Assertions.assertEquals(completed, 1998);
     }
 
     

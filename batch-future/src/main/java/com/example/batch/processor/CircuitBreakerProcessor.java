@@ -1,12 +1,13 @@
 package com.example.batch.processor;
 
-import com.example.batch.dto.ProcessResult;
-import com.example.batch.entity.Customer;
-import io.github.resilience4j.circuitbreaker.CircuitBreaker;
-import org.springframework.batch.item.ItemProcessor;
-import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.batch.item.ItemProcessor;
+
+import com.example.batch.dto.ProcessResult;
+import com.example.batch.entity.Customer;
+
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 
 /**
  * Resilience4j Circuit Breaker wrapper for customer processor.
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
  * - Faster failure detection and recovery
  * - Integrated with batch processing metrics
  */
-@Component
 public class CircuitBreakerProcessor implements ItemProcessor<Customer, ProcessResult> {
     
     private static final Logger log = LoggerFactory.getLogger(CircuitBreakerProcessor.class);

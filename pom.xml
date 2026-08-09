@@ -13,6 +13,7 @@
 	<modules>
 		<module>batch-taskExecutor</module>
 		<module>batch-future</module>
+		<module>batch-future-withooutcircuit</module>
 	</modules>
 	<properties>
 		<java.version>21</java.version>

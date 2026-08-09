@@ -5,7 +5,6 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tags;
 import org.springframework.batch.item.Chunk;
 import org.springframework.batch.item.ItemWriter;
-import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +22,6 @@ import java.util.Map;
  * - batch.retries counter
  * - Logs failure distribution per chunk
  */
-@Component
 public class MetricsCollectingWriter implements ItemWriter<ProcessResult> {
     
     private static final Logger log = LoggerFactory.getLogger(MetricsCollectingWriter.class);

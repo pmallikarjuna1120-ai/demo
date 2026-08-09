@@ -4,6 +4,7 @@ import java.util.concurrent.ExecutorService;
 
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
 import org.springframework.batch.integration.async.AsyncItemWriter;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -8,8 +8,9 @@ spring:
     jdbc:
       initialize-schema: always
 
-batch:
-  chunk-size: 10
-  page-size: 10
-  worker-threads: 4
-  queue-capacity: 20
+app:
+  batch:
+    chunk-size: 10
+    page-size: 10
+    worker-threads: 4
+    queue-capacity: 20

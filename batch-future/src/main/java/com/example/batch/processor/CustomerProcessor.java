@@ -68,7 +68,7 @@ public class CustomerProcessor implements ItemProcessor<Customer, ProcessResult>
                 processingTime,
                 ex.getMessage());
             item.setStatus("RETRYABLE_FAILED");
-            return ProcessResult.failure(item, ex, processingTime, retryTemplate.getRetryPolicy().getMaxAttempts());
+            return ProcessResult.failure(item, ex, processingTime, 3);
             
         } catch (BusinessValidationException ex) {
             // Business error - no retry

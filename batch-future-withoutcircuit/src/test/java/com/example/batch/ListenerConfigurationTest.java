@@ -1,19 +1,21 @@
 package com.example.batch;
 
-import com.example.batch.config.BatchJobConfig;
-import com.example.batch.listener.BatchChunkListener;
-import com.example.batch.listener.BatchJobListener;
-import com.example.batch.listener.BatchSkipListener;
-import com.example.batch.listener.BatchStepListener;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import com.example.batch.listener.BatchChunkListener;
+import com.example.batch.listener.BatchJobListener;
+import com.example.batch.listener.BatchSkipListener;
+import com.example.batch.listener.BatchStepListener;
 
 @SpringBootTest
+@ActiveProfiles("test") 
 class ListenerConfigurationTest {
 
     @Autowired Job customerJob;

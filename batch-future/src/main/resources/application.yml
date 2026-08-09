@@ -1,6 +1,6 @@
 spring:
   application:
-    name: spring-batch-single-reader-multi-thread
+    name: spring-batch-future-processor
   batch:
     jdbc:
       initialize-schema: never
@@ -10,27 +10,83 @@ spring:
     password: ${DB_PASSWORD:change-me}
     driver-class-name: oracle.jdbc.OracleDriver
     hikari:
-      maximum-pool-size: ${DB_POOL_SIZE:10}
-      minimum-idle: 2
+      maximum-pool-size: ${DB_POOL_SIZE:20}
+      minimum-idle: 5
       connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
 
+# Batch Processing Configuration
 app:
   batch:
-    chunk-size: ${BATCH_CHUNK_SIZE:100}
-    page-size: ${BATCH_PAGE_SIZE:100}
-    worker-threads: ${BATCH_WORKER_THREADS:8}
-    queue-capacity: ${BATCH_QUEUE_CAPACITY:500}
-    skip-limit: ${BATCH_SKIP_LIMIT:100}
-    retry-limit: ${BATCH_RETRY_LIMIT:3}
+    # Reader/Writer settings
+    chunk-size: ${BATCH_CHUNK_SIZE:500}         # Items per chunk
+    page-size: ${BATCH_PAGE_SIZE:500}           # Database page size
+    
+    # Worker thread pool
+    worker-threads: ${BATCH_WORKER_THREADS:8}   # Parallel processors
+    queue-capacity: ${BATCH_QUEUE_CAPACITY:1000}  # Backpressure queue
+    
+    # Retry settings
+    retry-limit: ${BATCH_RETRY_LIMIT:3}         # Transient failures
+    
+    # Skip settings
+    skip-limit: ${BATCH_SKIP_LIMIT:100}         # Failed items threshold
 
+# Actuator & Monitoring
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,debug,metrics,prometheus
+        include: health,info,metrics,prometheus
+  
+  endpoint:
+    health:
+      show-details: always
+  
+  metrics:
+    distribution:
+      percentiles-histogram:
+        batch.processing.time: true
+        batch.retries: true
+    tags:
+      application: ${spring.application.name}
+    enable:
+      jvm: true
+      process: true
+      system: true
+
+# Resilience4j Circuit Breaker
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        failure-rate-threshold: 50              # 50% failure = open
+        slow-call-rate-threshold: 100           # 100% slow calls = open
+        slow-call-duration-threshold: 2s        # > 2s = slow
+        wait-duration-in-open-state: 10s        # Wait before half-open
+        permitted-number-of-calls-in-half-open-state: 5
+        sliding-window-size: 100                # Last 100 calls
+        minimum-number-of-calls: 20             # Minimum before deciding
+        automatic-transition-from-open-to-half-open-enabled: true
+    
+    instances:
+      customerProcessor:
+        base-config: default
+
+# Logging
 logging:
   level:
+    root: INFO
     com.example.batch: DEBUG
-    org.springframework.batch: info
-    org.springframework.scheduling.concurrent: info
-    # root: DEBUG
+    org.springframework.batch: INFO
+    org.springframework.scheduling.concurrent: INFO
+    io.github.resilience4j: DEBUG
+  pattern:
+    console: "%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/batch-processing.log
+    max-size: 100MB
+    max-history: 7
+    total-size-cap: 1GB

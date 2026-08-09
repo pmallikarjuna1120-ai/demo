@@ -7,10 +7,14 @@ spring:
   batch:
     jdbc:
       initialize-schema: always
-
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
 app:
   batch:
     chunk-size: 10
     page-size: 10
-    worker-threads: 4
+    worker-threads: 10
     queue-capacity: 20
+
